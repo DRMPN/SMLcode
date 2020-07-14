@@ -69,3 +69,68 @@ fun firsts (xs : (int * int) list) =
     then []
     else #1 (hd xs) :: firsts (tl xs);
 
+(* Let experssions *)
+
+fun le (x : int) =
+    let
+        val y = 2
+    in
+        x * y
+    end;
+
+fun countup_from1 (x : int) =
+    let
+        fun count (from) =
+            if from = x
+            then x :: []
+            else from :: count (from+1)
+    in
+        count (1)
+    end;
+
+fun max_list (xs : int list) =
+    if null xs
+    then 0
+    else if null (tl xs)
+    then hd xs
+    else
+        let
+            val tl_ans = max_list (tl xs)
+        in
+            if hd xs > tl_ans
+            then hd xs
+            else tl_ans
+        end;
+
+(* Monads *)
+
+fun monad_max_list (xs : int list) =
+    if null xs
+    then NONE
+    else
+        let val tl_ans = monad_max_list (tl xs)
+        in
+            if isSome tl_ans andalso valOf tl_ans > hd xs
+            then tl_ans
+            else SOME (hd xs)
+        end;
+
+fun better_max_list (xs : int list) =
+    if null xs
+    then NONE
+    else
+        let
+            fun none_empty (xs : int list) =
+                if null (tl xs)
+                then hd xs
+                else
+                    let
+                        val tl_ans = none_empty (tl xs)
+                    in
+                        if hd xs > tl_ans
+                        then hd xs
+                        else tl_ans
+                    end;
+        in
+            SOME (none_empty xs)
+        end;
