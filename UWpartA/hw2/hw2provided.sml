@@ -84,3 +84,76 @@ datatype move = Discard of card | Draw;
 exception IllegalMove;
 
 (* put your solutions for problem 2 here *)
+
+(* -- (a) -- *)
+fun card_color (suit,_) =
+    case suit of
+        Clubs => Black
+      | Spades => Black
+      | _ => Red;
+
+(* -- (b) -- *)
+fun card_value (_,rank) =
+    case rank of
+        Num x => x
+      | Ace => 11
+      | _ => 10;
+
+(* -- (c) -- *)
+fun remove_card (loc,c : card,e) =
+    let
+        fun aux ([],ys) = raise e
+          | aux (x::xs,ys) = if x = c
+                             then xs@ys
+                             else aux (xs,[x]@ys)
+    in
+        aux (loc,[])
+    end;
+
+(* -- (d) -- *)
+fun all_same_color [] = true
+  | all_same_color (x::xs) =
+    let
+        fun aux ([],_) = true
+          | aux (x::xs,c) = card_color x = c andalso aux (xs,c)
+    in aux (xs,card_color x)
+    end;
+
+(* -- (e) -- *)
+fun sum_cards loc =
+    let
+        fun aux ([],acc) = acc
+          | aux (x::xs,acc) = aux (xs,acc+card_value x)
+    in aux (loc,0)
+    end;
+
+(* -- (f) -- *)
+fun score (loc,goal) =
+    let
+        val sum = sum_cards loc
+        val preliminary_score =
+            if sum > goal
+            then 3 * (sum - goal)
+            else (goal - sum)
+    in
+        if all_same_color loc
+        then preliminary_score div 2
+        else preliminary_score
+    end;
+
+(* -- (g) -- *)
+(* The purpose is to test other functions before implementing the main *)
+fun officiate (_,_,_) = 0
+
+(* draw
+
+fun officiate (loc, [], goal) = score ([], 0) (* if empty then score *)
+  | officiate (loc as c::cs, lom as m::ms, goal) =
+    let
+        fun aux (loc,lom,goal,lohc) =
+    in case m of
+         | Draw => aux (cs,ms,goal,c::[]) (* helper *)
+         | Discard c => remove_card (card::loc,c,IllegalMove) (* remove c from held-card*)
+    end;
+
+*)
