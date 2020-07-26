@@ -46,17 +46,33 @@ val test8_0 = all_answers (fn x => if x = 1 then SOME [x] else NONE) [] = SOME [
 val test8_1 = all_answers (fn x => if x < 1 then SOME [x] else NONE) [0,1,2,3,4,5,6,7] = NONE;
 val test8_2 = all_answers (fn x => if x > 1 then SOME [x] else NONE) [2,3,4] = SOME [2,3,4];
 
-                                                                                       (*
-val test9a = count_wildcards Wildcard = 1
+val _ = print "\nTests for 9th A funcion:\n"
+val test9_0a = count_wildcards UnitP = 0;
+val test9_1a = count_wildcards Wildcard = 1;
+val test9_2a = count_wildcards (TupleP [Wildcard,(Variable "hi"),Wildcard]) = 2;
 
-val test9b = count_wild_and_variable_lengths (Variable("a")) = 1
+val _ = print "\nTests for 9th B funcion:\n"
+val test9_0b = count_wild_and_variable_lengths UnitP = 0;
+val test9_1b = count_wild_and_variable_lengths Wildcard = 1;
+val test9_2b = count_wild_and_variable_lengths (TupleP [Wildcard,(Variable "hi"),(TupleP [Wildcard])]) = 4;
 
-val test9c = count_some_var ("x", Variable("x")) = 1
+val _ = print "\nTests for 9th C funcion:\n"
+val test9_0c = count_some_var ("x", Wildcard) = 0;
+val test9_1c = count_some_var ("x", Variable("x")) = 1;
+val test9_2c = count_some_var ("x", (TupleP [Wildcard,(Variable "x"),(Variable "c")])) = 1;
 
-val test10 = check_pat (Variable("x")) = true
+val _ = print "\nTests for 10th funcion:\n"
+val test10_0 = check_pat UnitP = true;
+val test10_1 = check_pat (Variable("x")) = true;
+val test10_2 = check_pat (TupleP [Wildcard,(Variable "x"),(Variable "c"),(ConstructorP ("yo",Wildcard))]) = true;
 
-val test11 = match (Const(1), UnitP) = NONE
+val _ = print "\nTests for 11th funcion:\n"
+val test11_0 = match (Tuple [], TupleP []) = SOME [];
+val test11_1 = match (Const(1), UnitP) = NONE;
+val test11_2 = match (Tuple [Const 1,Unit], TupleP [ConstP 1]) = NONE;
+val test11_3 = match (Tuple [Const 1,Const 0], TupleP [ConstP 1,Variable "x"]) = SOME [("x",Const 0)];
 
-val test12 = first_match Unit [UnitP] = SOME []
-
-*)
+val _ = print "\nTests for 12th funcion:\n"
+val test12_0 = first_match Unit [] = NONE;
+val test12_1 = first_match Unit [UnitP] = SOME [];
+val test12_2 = first_match (Const 0) [UnitP,Variable "x"] = SOME [("x", Const 0)];
