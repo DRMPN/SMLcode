@@ -53,14 +53,12 @@ val longest_capitalized = longest_string3 o only_capitals;
 val rev_string = String.implode o List.rev o String.explode;
 
 (* >>> Exercise 7 <<< *)
-
 fun first_answer f xs =
     case List.filter isSome (List.map f xs) of
         (SOME x)::xs => x
       | _ => raise NoAnswer;
 
 (* >>> Exercise 8 <<< *)
-
 fun all_answers f xs=
     let fun aux acc xs = case xs of
                              [] => SOME acc
@@ -111,9 +109,13 @@ fun match v_p =
       | (Const i1, ConstP i2) => if i1 = i2 then SOME [] else NONE
       | (Tuple vs, TupleP ps) => if List.length vs = List.length ps
                                  then (all_answers match o ListPair.zip) (vs,ps) else NONE
+      | (Constructor (s1,v), ConstructorP (s2,p)) => if s1 = s2 then match (v,p) else NONE
+      | _ => NONE;
+
+(* Didn't understand correctly
       | (Constructor (s1,v), ConstructorP (s2,p)) => if s1 = s2 andalso (isSome o match) (v,p)
                                                      then SOME [(s1,v)] else NONE
-      | _ => NONE;
+*)
 
 (* >>> Exercise 12 <<< *)
 fun first_match v lop = (SOME (first_answer (fn x => match (v,x)) lop)) handle NoAnswer => NONE;
